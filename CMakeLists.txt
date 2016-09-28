@@ -7,7 +7,7 @@ message ("---CMAKE_SYSTEM_NAME " ${CMAKE_SYSTEM_NAME})
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Windows") 
 
-	SET(CMAKE_CXX_FLAGS -D _WINDOWS=1)
+	add_definitions(-D_WINDOWS)
 
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 

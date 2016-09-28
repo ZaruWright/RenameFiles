@@ -51,17 +51,29 @@ void RenameFiles::renameAllDiretoryFiles()
 				{
 					--j;
 				}
-
+                std::string extension(name.substr(j, name.length()));
+                
+                // We don't want to rename the DS_Store
+                if (extension == ".DS_Store") break;
+                
 				// Rename
-				std::string stringToRename(nameFiles + number + name.substr(j, name.length()));
-				
-				std::string oldName(directory + "\\" + name);
-				std::string newName(directory + "\\" + stringToRename);
+				std::string stringToRename(nameFiles + number + extension);
+                    
+                #ifdef _WINDOWS
+                    std::string separator("\\");
+                #else
+                    std::string separator("/");
+                #endif
+                    
+				std::string oldName(directory + separator + name);
+				std::string newName(directory + separator + stringToRename);
 				
 				const char * oldNamecstr = oldName.c_str();
 				const char * newNamecstr = newName.c_str();
 				
 				std::rename(oldNamecstr, newNamecstr);
+                    
+                //std::cout << oldName << "->" << newName << std::endl;
 
 				++currentNumber;
 				break;
@@ -70,6 +82,7 @@ void RenameFiles::renameAllDiretoryFiles()
 		}
 
 		closedir(dir);
+        std::cout << "Done!" << std::endl;
 	}
 	else {
 		/* Could not open directory */

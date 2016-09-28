@@ -2,9 +2,10 @@ file (GLOB APP_SOURCES
 		"*.h"
 		"*.cpp")
 
-# Additional include directories
-include_directories(${CMAKE_SOURCE_DIR}/Dependencies/Dirent/include)
-
+if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+	# Additional include directories
+	include_directories(${CMAKE_SOURCE_DIR}/Dependencies/Dirent/include)
+endif()
 # Create executable
 add_executable(RenameFiles ${APP_SOURCES})
 

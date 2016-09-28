@@ -41,7 +41,7 @@ Usage
 
 An example:
 ```bash
-> lRenameFiles -d directoryToRenameFiles -n nameToReplace
+> ./lRenameFiles -d directoryToRenameFiles -n nameToReplace
 ```
 
 Compilation

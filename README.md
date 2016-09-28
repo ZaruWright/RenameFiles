@@ -3,8 +3,8 @@ Rename files
 
 Simple c++ program to rename all files from a directory.
 
-Usage
-=====
+Execute
+=======
 You doesn't need to compile anything, the binaries there are into the *Exes* folder.
 
 Windows
@@ -29,6 +29,19 @@ Linux
 cd RenameFiles
 cd Exes
 ./lRenameFiles
+```
+
+Usage
+=====
+```
+-d/--directory : The directory that you want to rename the files
+-n/--name      : The name to rename the files
+-h/--help      : Show the options of the program
+```
+
+An example:
+```bash
+> lRenameFiles -d directoryToRenameFiles -n nameToReplace
 ```
 
 Compilation

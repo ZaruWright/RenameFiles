@@ -26,7 +26,7 @@ void RenameFiles::renameAllDiretoryFiles()
 	if (dir != NULL) {
 		struct dirent *ent;
 
-		while ((ent = readdir(dir)) != NULL && currentNumber < filesOfDirectory) {
+		while ((ent = readdir(dir)) != NULL && currentNumber <= filesOfDirectory) {
 			switch (ent->d_type)
 			{
 			case DT_REG:
@@ -54,7 +54,11 @@ void RenameFiles::renameAllDiretoryFiles()
                 std::string extension(name.substr(j, name.length()));
                 
                 // We don't want to rename the DS_Store
-                if (extension == ".DS_Store") break;
+				if (extension == ".DS_Store")
+				{
+					--filesOfDirectory; 
+					break;
+				}
                 
 				// Rename
 				std::string stringToRename(nameFiles + number + extension);

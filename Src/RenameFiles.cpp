@@ -26,7 +26,7 @@ void RenameFiles::renameAllDiretoryFiles()
 	if (dir != NULL) {
 		struct dirent *ent;
 
-		while ((ent = readdir(dir)) != NULL) {			
+		while ((ent = readdir(dir)) != NULL && currentNumber < filesOfDirectory) {
 			switch (ent->d_type)
 			{
 			case DT_REG:

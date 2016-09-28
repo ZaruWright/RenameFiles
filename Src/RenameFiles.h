@@ -13,7 +13,9 @@ public:
 
 	void renameAllDiretoryFiles();
 
+
 	int howManyFiles();
+	void renameFilesAndMoveToAnotherDirectory(std::string Directory, int filesOfDirectory);
 
 private:
 	std::string directory;

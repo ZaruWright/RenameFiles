@@ -7,51 +7,32 @@
 
 void RenameFiles::renameAllDiretoryFiles()
 {
+	std::string tmpDirectory("tmp");
+
 	int filesOfDirectory = howManyFiles();
+	renameFilesAndMoveToAnotherDirectory(tmpDirectory, filesOfDirectory);
 
-	/*Calculate the number of zeros thathave the first numbers*/
-	int tenMultiply = 10;
-	int numberOfZeros = 0;
-	while (filesOfDirectory % tenMultiply != filesOfDirectory)
-	{
-		tenMultiply *= 10;
-		++numberOfZeros;
-	}
-
-	int currentNumber = 1;
-	tenMultiply = 10;
 	DIR *dir;
 	/* Open directory stream */
 	dir = opendir(directory.c_str());
+
 	if (dir != NULL) {
 		struct dirent *ent;
 
-		while ((ent = readdir(dir)) != NULL && currentNumber <= filesOfDirectory) {
+		while ((ent = readdir(dir)) != NULL) {
 			switch (ent->d_type)
 			{
 			case DT_REG:
 
-				// Get Number of zeros 
-				if (currentNumber % tenMultiply != currentNumber)
-				{
-					tenMultiply *= 10;
-					--numberOfZeros;
-				}
-				std::string number("");
-				for (int i = 0; i < numberOfZeros; ++i)
-				{
-					number += "0";
-				}
-				number += std::to_string(currentNumber);
-
 				// Get extension
 				std::string name(ent->d_name);
-				int j = name.length();
+				int j = name.length() - 1;
 				while (name[j]  != '.')
 				{
 					--j;
 				}
                 std::string extension(name.substr(j, name.length()));
+                
                 
                 // We don't want to rename the DS_Store
 				if (extension == ".DS_Store")
@@ -59,9 +40,6 @@ void RenameFiles::renameAllDiretoryFiles()
 					--filesOfDirectory; 
 					break;
 				}
-                
-				// Rename
-				std::string stringToRename(nameFiles + number + extension);
                     
                 #ifdef _WINDOWS
                     std::string separator("\\");
@@ -69,17 +47,16 @@ void RenameFiles::renameAllDiretoryFiles()
                     std::string separator("/");
                 #endif
                     
-				std::string oldName(directory + separator + name);
-				std::string newName(directory + separator + stringToRename);
+				std::string tmpName(directory + separator + name);
+				std::string newName(".." + separator + name);
 				
-				const char * oldNamecstr = oldName.c_str();
+				const char * tmpNamecstr = tmpName.c_str();
 				const char * newNamecstr = newName.c_str();
 				
-				std::rename(oldNamecstr, newNamecstr);
+				std::rename(tmpNamecstr, newNamecstr);
                     
-                //std::cout << oldName << "->" << newName << std::endl;
+                std::cout << tmpName << "->" << newName << std::endl;
 
-				++currentNumber;
 				break;
 			}
 
@@ -90,8 +67,9 @@ void RenameFiles::renameAllDiretoryFiles()
 	}
 	else {
 		/* Could not open directory */
-		std::cout << "Cannot open directory " << directory.c_str() << std::endl;
+		std::cout << "Cannot open directory. RenameFiles::renameAllDiretoryFiles " << directory.c_str() << std::endl;
 	}
+	
 }
 
 int RenameFiles::howManyFiles()
@@ -115,8 +93,97 @@ int RenameFiles::howManyFiles()
 	}
 	else {
 		/* Could not open directory */
-		std::cout << "Cannot open directory " << directory.c_str() << std::endl;
+		std::cout << "Cannot open directory. RenameFiles::howManyFiles" << directory.c_str() << std::endl;
 	}
 
 	return numberOfFiles;
+}
+
+void RenameFiles::renameFilesAndMoveToAnotherDirectory(std::string tmpDirectory, int filesOfDirectory)
+{
+	/*Calculate the number of zeros thathave the first numbers*/
+	int tenMultiply = 10;
+	int numberOfZeros = 0;
+	while (filesOfDirectory % tenMultiply != filesOfDirectory)
+	{
+		tenMultiply *= 10;
+		++numberOfZeros;
+	}
+
+	int currentNumber = 1;
+	tenMultiply = 10;
+	DIR *dir;
+	/* Open directory stream */
+	dir = opendir(directory.c_str());
+
+	if (dir != NULL) {
+		struct dirent *ent;
+
+		while ((ent = readdir(dir)) != NULL && currentNumber <= filesOfDirectory) {
+			switch (ent->d_type)
+			{
+			case DT_REG:
+
+				// Get Number of zeros 
+				if (currentNumber % tenMultiply != currentNumber)
+				{
+					tenMultiply *= 10;
+					--numberOfZeros;
+				}
+				std::string number("");
+				for (int i = 0; i < numberOfZeros; ++i)
+				{
+					number += "0";
+				}
+				number += std::to_string(currentNumber);
+
+
+				// Get extension
+				std::string name(ent->d_name);
+				int j = name.length() - 1;
+				while (name[j]  != '.')
+				{
+					--j;
+				}
+                std::string extension(name.substr(j, name.length()));
+                
+                
+                // We don't want to rename the DS_Store
+				if (extension == ".DS_Store")
+				{
+					--filesOfDirectory; 
+					break;
+				}
+                
+				// Rename
+				std::string stringToRename(nameFiles + number + extension);
+                    
+                #ifdef _WINDOWS
+                    std::string separator("\\");
+                #else
+                    std::string separator("/");
+                #endif
+                    
+				std::string oldName(directory + separator + name);
+				std::string newName(directory + separator + tmpDirectory + separator + stringToRename);
+				
+				const char * oldNamecstr = oldName.c_str();
+				const char * newNamecstr = newName.c_str();
+				
+				std::rename(oldNamecstr, newNamecstr);
+                    
+                //std::cout << oldName << "->" << newName << std::endl;
+
+				++currentNumber;
+				break;
+			}
+
+		}
+
+		closedir(dir);
+	}
+	else {
+		/* Could not open directory */
+		std::cout << "Cannot open directory. RenameFiles::renameFilesAndMoveToAnotherDirectory " << directory.c_str() << std::endl;
+	}
 }

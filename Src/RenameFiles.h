@@ -20,5 +20,10 @@ public:
 private:
 	std::string directory;
 	std::string nameFiles;
+#ifdef _WINDOWS
+	std::string separator = "\\";
+#else
+	std::string separator = "/";
+#endif
 };
 

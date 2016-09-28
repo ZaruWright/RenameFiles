@@ -8,13 +8,12 @@
 void RenameFiles::renameAllDiretoryFiles()
 {
 	std::string tmpDirectory("tmp");
-
+	CreateDirectory(std::string(directory + separator + tmpDirectory).c_str(), nullptr);
 	int filesOfDirectory = howManyFiles();
 	renameFilesAndMoveToAnotherDirectory(tmpDirectory, filesOfDirectory);
 
 	DIR *dir;
-	/* Open directory stream */
-	dir = opendir(directory.c_str());
+	dir = opendir(std::string(directory + separator + tmpDirectory).c_str());
 
 	if (dir != NULL) {
 		struct dirent *ent;
@@ -41,21 +40,15 @@ void RenameFiles::renameAllDiretoryFiles()
 					break;
 				}
                     
-                #ifdef _WINDOWS
-                    std::string separator("\\");
-                #else
-                    std::string separator("/");
-                #endif
-                    
-				std::string tmpName(directory + separator + name);
-				std::string newName(".." + separator + name);
+				std::string tmpName(directory + separator + tmpDirectory + separator + name);
+				std::string newName(directory + separator + name);
 				
 				const char * tmpNamecstr = tmpName.c_str();
 				const char * newNamecstr = newName.c_str();
 				
 				std::rename(tmpNamecstr, newNamecstr);
                     
-                std::cout << tmpName << "->" << newName << std::endl;
+                //std::cout << tmpName << "->" << newName << std::endl;
 
 				break;
 			}
@@ -66,9 +59,11 @@ void RenameFiles::renameAllDiretoryFiles()
         std::cout << "Done!" << std::endl;
 	}
 	else {
-		/* Could not open directory */
+		
 		std::cout << "Cannot open directory. RenameFiles::renameAllDiretoryFiles " << directory.c_str() << std::endl;
 	}
+
+	RemoveDirectory(std::string(directory + separator + tmpDirectory).c_str());
 	
 }
 
@@ -139,7 +134,7 @@ void RenameFiles::renameFilesAndMoveToAnotherDirectory(std::string tmpDirectory,
 
 
 				// Get extension
-				std::string name(ent->d_name);
+ 				std::string name(ent->d_name);
 				int j = name.length() - 1;
 				while (name[j]  != '.')
 				{
@@ -157,12 +152,6 @@ void RenameFiles::renameFilesAndMoveToAnotherDirectory(std::string tmpDirectory,
                 
 				// Rename
 				std::string stringToRename(nameFiles + number + extension);
-                    
-                #ifdef _WINDOWS
-                    std::string separator("\\");
-                #else
-                    std::string separator("/");
-                #endif
                     
 				std::string oldName(directory + separator + name);
 				std::string newName(directory + separator + tmpDirectory + separator + stringToRename);

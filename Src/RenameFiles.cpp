@@ -5,10 +5,22 @@
 #include "RenameFiles.h"
 #include "dirent.h"
 
+#ifndef _WINDOWS
+    #include <sys/stat.h>
+    #include <sys/types.h>
+    #include <unistd.h>
+#endif
+
 void RenameFiles::renameAllDiretoryFiles()
 {
 	std::string tmpDirectory("tmp");
-	CreateDirectory(std::string(directory + separator + tmpDirectory).c_str(), nullptr);
+    
+    #ifdef _WINDOWS
+    CreateDirectory(std::string(directory + separator + tmpDirectory).c_str(), nullptr);
+    #else
+    mkdir(std::string(directory + separator + tmpDirectory).c_str(), 0777);
+    #endif
+	
 	int filesOfDirectory = howManyFiles();
 	renameFilesAndMoveToAnotherDirectory(tmpDirectory, filesOfDirectory);
 
@@ -62,9 +74,12 @@ void RenameFiles::renameAllDiretoryFiles()
 		
 		std::cout << "Cannot open directory. RenameFiles::renameAllDiretoryFiles " << directory.c_str() << std::endl;
 	}
-
-	RemoveDirectory(std::string(directory + separator + tmpDirectory).c_str());
-	
+    
+    #ifdef _WINDOWS
+    RemoveDirectory(std::string(directory + separator + tmpDirectory).c_str());
+    #else
+    rmdir(std::string(directory + separator + tmpDirectory).c_str());
+    #endif
 }
 
 int RenameFiles::howManyFiles()

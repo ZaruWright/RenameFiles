@@ -3,30 +3,55 @@ Rename files
 
 Simple c++ program to rename all files from a directory.
 
+Usage
+=====
+You doesn't need to compile anything, the binaries there are into the *Exes* folder.
+
 Windows
 -------
 ```batch
 cd RenameFiles
-wclean
-wbuild
-
+cd Exes
+wRenameFiles
 ```
 
 OS X
 ----
 ```bash
 cd RenameFiles
-sh mclean
-sh mbuild
-
+cd Exes
+./mRenameFiles
 ```
 
-**TIP: If you have a hierarchy like this:
-	doc copia.txt
-	doc1.txt
-And you want to rename them with the 'doc' name, the result will be this:
-	doc copia.txt -> doc1.txt
-	doc1.txt      -> doc2.txt
-Explain it a little:
-	the first doc will be rename with 'doc1.txt', but there is a file with the same name, because that the program overwrite the doc1.txt old file with the new file. and later this file rename with the doc2.txt name.
+Linux
+----
+```bash
+cd RenameFiles
+cd Exes
+./lRenameFiles
+```
 
+Compilation
+===========
+If you want to compile it, the only prerequisite that you need is CMake. When you have installed it, follow the next steps:
+
+Windows
+-------
+```batch
+wclean /*This is to remove the _build folder*/
+wbuild /*Create Visual Studio 12 proyect*/
+```
+
+OS X
+----
+```bash
+mclean /*This is to remove the _build folder*/
+mbuild /*Create XCode proyect*/
+```
+
+Linux
+----
+```bash
+lclean /*This is to remove the _build folder*/
+lbuild /*Create a Makefile*/
+```
